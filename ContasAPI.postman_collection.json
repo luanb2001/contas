@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "3930ee27-d69c-40ab-bbab-f500734fd33c",
+		"name": "ContasAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23459328"
+	},
+	"item": [
+		{
+			"name": "Cadastrar conta",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "contas",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "desafio",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dataVencimento\": \"2024-09-25T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"ABERTA\",\n    \"valor\": 10.5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/conta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Importar conta",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "contas",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "desafio",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/luan/contas/src/main/resources/csv-examplo-gerar-contas.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/conta/importar-conta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta",
+						"importar-conta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar conta",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "contas",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "desafio",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"cac2e5b4-1681-4b1c-b705-4f6d6fa48354\",\n    \"dataVencimento\": \"2024-09-24T12:30:45\",\n    \"dataPagamento\": \"2024-10-24T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"PAGA\",\n    \"valor\": 10.5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/conta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar situação conta",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"cac2e5b4-1681-4b1c-b705-4f6d6fa48354\",\n    \"situacaoContaEnum\": \"ABERTA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/conta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar contas por filtro",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "contas",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "desafio",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dataVencimento\": \"2024-06-03T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"ABERTA\",\n    \"valor\": 10.5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/conta/listar-contas?data-vencimento-inicial=2024-09-19T12:30:45&data-vencimento-final=2024-09-30T12:30:45&pagina=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta",
+						"listar-contas"
+					],
+					"query": [
+						{
+							"key": "data-vencimento-inicial",
+							"value": "2024-09-19T12:30:45"
+						},
+						{
+							"key": "data-vencimento-final",
+							"value": "2024-09-30T12:30:45"
+						},
+						{
+							"key": "pagina",
+							"value": "1"
+						},
+						{
+							"key": "descricao",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Carregar valor pago",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/conta/listar-contas?data-inicial=2024-09-23T12:30:45&data-final=2024-09-25T12:30:45",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta",
+						"listar-contas"
+					],
+					"query": [
+						{
+							"key": "data-inicial",
+							"value": "2024-09-23T12:30:45"
+						},
+						{
+							"key": "data-final",
+							"value": "2024-09-25T12:30:45"
+						},
+						{
+							"key": "descricao",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Carregar conta por Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/conta/listar-contas?data-inicial=2024-09-23T12:30:45&data-final=2024-09-25T12:30:45",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conta",
+						"listar-contas"
+					],
+					"query": [
+						{
+							"key": "data-inicial",
+							"value": "2024-09-23T12:30:45"
+						},
+						{
+							"key": "data-final",
+							"value": "2024-09-25T12:30:45"
+						},
+						{
+							"key": "descricao",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
