@@ -1,4 +1,4 @@
-package com.project.contas.presentation.controllers;
+package com.project.contas.adapters.in;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;

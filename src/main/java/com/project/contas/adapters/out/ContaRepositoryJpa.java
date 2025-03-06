@@ -1,4 +1,4 @@
-package com.project.contas.infrastructure;
+package com.project.contas.adapters.out;
 
 import java.time.LocalDateTime;
 import java.util.List;
