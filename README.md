@@ -38,7 +38,7 @@
      - data-vencimento-inicial - Data inicial
      - data-vencimento-final - Data final
      - descricao - A descricao da conta
-     - pagina - A pagina que vai carregar
+     - pagina - A pagina que vai carregar (iniciando por 0)
      - maximo-por-pagina - A quantidade por pagina
 
 ## LinkedIn

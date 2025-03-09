@@ -1,50 +1,49 @@
-//package com.project.contas.application.service;
-//
-//import com.opencsv.bean.CsvToBean;
-//import com.opencsv.bean.CsvToBeanBuilder;
-//import com.project.contas.application.usecase.ImportarContasCSVUseCase;
-//import com.project.contas.domain.Conta;
-//import com.project.contas.domain.repository.ContaRepository;
-//import com.project.contas.dto.CadastrarContaCSV;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.io.BufferedReader;
-//import java.io.InputStreamReader;
-//import java.util.List;
-//
-//@Service
-//@Transactional
-//public class ImportarContasCSVAppServiceTest implements ImportarContasCSVUseCase {
-//
-//    private ContaRepository contaRepository;
-//
-//    @Override
-//    public Boolean executar(MultipartFile file) {
-//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-//            CsvToBean<CadastrarContaCSV> csvToBean = new CsvToBeanBuilder<CadastrarContaCSV>(reader)
-//                    .withType(CadastrarContaCSV.class)
-//                    .withIgnoreLeadingWhiteSpace(true)
-//                    .build();
-//
-//            List<CadastrarContaCSV> cadastrarContaCSVS = csvToBean.parse();
-//
-//            if (cadastrarContaCSVS == null || cadastrarContaCSVS.isEmpty()) {
-//                return Boolean.FALSE;
-//            }
-//
-//            cadastrarContaCSVS.forEach(contaCSV -> this.contaRepository.save(Conta.cadastrarConta(contaCSV)));
-//        } catch (Exception e) {
-//            return Boolean.FALSE;
-//        }
-//
-//        return Boolean.TRUE;
-//    }
-//
-//    @Autowired
-//    public void setContaRepository(ContaRepository contaRepository) {
-//        this.contaRepository = contaRepository;
-//    }
-//}
+package com.project.contas.application.service;
+
+import com.project.contas.domain.Conta;
+import com.project.contas.domain.repository.ContaRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class ImportarContasCSVAppServiceTest {
+
+    @InjectMocks
+    private ImportarContasCSVAppService importarContasCSVAppService;
+
+    @Mock
+    private ContaRepository contaRepository;
+
+    @Test
+    void executarDeveImportarComSucesso() throws Exception {
+        String csvContent = "descricao,valor\nConta Teste,100.00";
+        InputStream inputStream = new ByteArrayInputStream(csvContent.getBytes());
+        MultipartFile multipartFile = new MockMultipartFile("file.csv", "file.csv", "text/csv", inputStream);
+
+        Boolean resultado = this.importarContasCSVAppService.executar(multipartFile);
+        assertTrue(resultado);
+
+        verify(this.contaRepository).save(any(Conta.class));
+    }
+
+    @Test
+    void executarDeveRetornarFalseQuandoCSVInvalido() throws Exception {
+        InputStream inputStream = new ByteArrayInputStream("".getBytes());
+        MultipartFile multipartFile = new MockMultipartFile("file.csv", inputStream);
+
+        Boolean resultado = this.importarContasCSVAppService.executar(multipartFile);
+        assertFalse(resultado);
+    }
+}
