@@ -25,5 +25,11 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=Contas
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+
 volumes:
   postgres-data:
