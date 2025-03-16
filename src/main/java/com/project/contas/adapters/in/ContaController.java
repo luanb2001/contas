@@ -1,9 +1,9 @@
 package com.project.contas.adapters.in;
 
 import com.project.contas.application.usecase.*;
-import com.project.contas.dto.AtualizarSituacaoContaDTO;
-import com.project.contas.dto.CadastrarContaDTO;
-import com.project.contas.dto.ContaDTO;
+import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
+import com.project.contas.domain.dto.CadastrarContaDTO;
+import com.project.contas.domain.dto.ContaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,13 +19,25 @@ import java.util.UUID;
 @RequestMapping(value = "/conta")
 public class ContaController {
 
-	private CadastrarContaUseCase cadastrarContaUseCase;
-	private AtualizarContaUseCase atualizarContaUseCase;
-	private AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase;
-	private BuscarContaPorIdUseCase buscarContaPorIdUseCase;
-	private ListarContasUseCase listarContasUseCase;
-	private CarregarValorPagoUseCase carregarValorPagoUseCase;
-	private ImportarContasCSVUseCase importarContasCSVUseCase;
+	@Autowired
+	public ContaController(CadastrarContaUseCase cadastrarContaUseCase, AtualizarContaUseCase atualizarContaUseCase, AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase,
+						   BuscarContaPorIdUseCase buscarContaPorIdUseCase, ListarContasUseCase listarContasUseCase, CarregarValorPagoUseCase carregarValorPagoUseCase, ImportarContasCSVUseCase importarContasCSVUseCase) {
+		this.cadastrarContaUseCase = cadastrarContaUseCase;
+		this.atualizarContaUseCase = atualizarContaUseCase;
+		this.atualizarSituacaoContaUseCase = atualizarSituacaoContaUseCase;
+		this.buscarContaPorIdUseCase = buscarContaPorIdUseCase;
+		this.listarContasUseCase = listarContasUseCase;
+		this.carregarValorPagoUseCase = carregarValorPagoUseCase;
+		this.importarContasCSVUseCase = importarContasCSVUseCase;
+	}
+
+	private final CadastrarContaUseCase cadastrarContaUseCase;
+	private final AtualizarContaUseCase atualizarContaUseCase;
+	private final AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase;
+	private final BuscarContaPorIdUseCase buscarContaPorIdUseCase;
+	private final ListarContasUseCase listarContasUseCase;
+	private final CarregarValorPagoUseCase carregarValorPagoUseCase;
+	private final ImportarContasCSVUseCase importarContasCSVUseCase;
 
 	@PostMapping
 	public ResponseEntity<Boolean> cadastrarConta(@RequestBody CadastrarContaDTO cadastrarContaDTO) {
@@ -77,39 +89,4 @@ public class ContaController {
     public ResponseEntity<Boolean> importarContasCSV(@RequestBody MultipartFile file) {
         return ResponseEntity.ok(this.importarContasCSVUseCase.executar(file));
     }
-
-	@Autowired
-	public void setCadastrarContaUseCase(CadastrarContaUseCase cadastrarContaUseCase) {
-		this.cadastrarContaUseCase = cadastrarContaUseCase;
-	}
-
-	@Autowired
-	public void setAtualizarContaUseCase(AtualizarContaUseCase atualizarContaUseCase) {
-		this.atualizarContaUseCase = atualizarContaUseCase;
-	}
-
-	@Autowired
-	public void setAtualizarSituacaoContaUseCase(AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase) {
-		this.atualizarSituacaoContaUseCase = atualizarSituacaoContaUseCase;
-	}
-
-	@Autowired
-	public void setBuscarContaPorIdUseCase(BuscarContaPorIdUseCase buscarContaPorIdUseCase) {
-		this.buscarContaPorIdUseCase = buscarContaPorIdUseCase;
-	}
-
-	@Autowired
-	public void setListarContasUseCase(ListarContasUseCase listarContasUseCase) {
-		this.listarContasUseCase = listarContasUseCase;
-	}
-
-	@Autowired
-	public void setCarregarValorPagoUseCase(CarregarValorPagoUseCase carregarValorPagoUseCase) {
-		this.carregarValorPagoUseCase = carregarValorPagoUseCase;
-	}
-
-	@Autowired
-	public void setImportarContasCSVUseCase(ImportarContasCSVUseCase importarContasCSVUseCase) {
-		this.importarContasCSVUseCase = importarContasCSVUseCase;
-	}
 }

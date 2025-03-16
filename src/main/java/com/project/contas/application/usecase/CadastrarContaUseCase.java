@@ -1,6 +1,6 @@
 package com.project.contas.application.usecase;
 
-import com.project.contas.dto.CadastrarContaDTO;
+import com.project.contas.domain.dto.CadastrarContaDTO;
 
 public interface CadastrarContaUseCase {
 

@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.project.contas.domain.enums.SituacaoContaEnum;
-import com.project.contas.dto.AtualizarSituacaoContaDTO;
-import com.project.contas.dto.CadastrarContaCSV;
-import com.project.contas.dto.CadastrarContaDTO;
-import com.project.contas.dto.ContaDTO;
+import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
+import com.project.contas.domain.dto.CadastrarContaCSV;
+import com.project.contas.domain.dto.CadastrarContaDTO;
+import com.project.contas.domain.dto.ContaDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -26,9 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.contas.domain.enums.SituacaoContaEnum;
-import com.project.contas.dto.AtualizarSituacaoContaDTO;
-import com.project.contas.dto.CadastrarContaDTO;
-import com.project.contas.dto.ContaDTO;
+import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
+import com.project.contas.domain.dto.CadastrarContaDTO;
+import com.project.contas.domain.dto.ContaDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

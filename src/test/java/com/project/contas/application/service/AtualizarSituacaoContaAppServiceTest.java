@@ -2,7 +2,7 @@ package com.project.contas.application.service;
 
 import com.project.contas.domain.enums.SituacaoContaEnum;
 import com.project.contas.domain.repository.ContaRepository;
-import com.project.contas.dto.AtualizarSituacaoContaDTO;
+import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

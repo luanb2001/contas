@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 @Service
 public class CarregarValorPagoAppService implements CarregarValorPagoUseCase {
 
-    private ContaRepository contaRepository;
+    @Autowired
+    public CarregarValorPagoAppService(ContaRepository contaRepository) {
+        this.contaRepository = contaRepository;
+    }
+
+    private final ContaRepository contaRepository;
 
     @Override
     public Double executar(LocalDateTime dataInicial, LocalDateTime dataFinal) {
         return this.contaRepository.carregarValorPagoPorPeriodo(dataInicial, dataFinal);
-    }
-
-    @Autowired
-    public void setContaRepository(ContaRepository contaRepository) {
-        this.contaRepository = contaRepository;
     }
 }

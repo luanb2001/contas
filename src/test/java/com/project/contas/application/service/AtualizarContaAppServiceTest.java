@@ -1,7 +1,7 @@
 package com.project.contas.application.service;
 
 import com.project.contas.domain.repository.ContaRepository;
-import com.project.contas.dto.ContaDTO;
+import com.project.contas.domain.dto.ContaDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

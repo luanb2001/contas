@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.project.contas.domain.Conta;
-import com.project.contas.dto.ContaDTO;
+import com.project.contas.domain.dto.ContaDTO;
 
 public interface ContaRepository {
 
