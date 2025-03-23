@@ -23,7 +23,7 @@ public class AtualizarContaAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executar() {
+    public void executar() {
         ContaDTO contaDTO = new ContaDTO(
                 UUID.randomUUID(),
                 LocalDateTime.now().plusDays(10),

@@ -23,7 +23,7 @@ public class AtualizarSituacaoContaAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executar() {
+    public void executar() {
         AtualizarSituacaoContaDTO atualizarSituacaoContaDTO = new AtualizarSituacaoContaDTO(
                 UUID.randomUUID(),
                 SituacaoContaEnum.PAGA
