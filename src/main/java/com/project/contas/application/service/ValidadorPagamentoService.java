@@ -11,25 +11,32 @@ import java.util.Objects;
 @Service
 public class ValidadorPagamentoService {
 
+    public static final String CONTA_NAO_ENCONTRADA = "Conta não encontrada para o pagamento.";
+    public static final String CONTA_PAGA = "Esta conta já foi paga.";
+    public static final String CONTA_CANCELADA = "Esta conta foi cancelada.";
+    public static final String CONTA_VENCIDA = "Esta conta está vencida e não pode ser paga.";
+    public static final String VALOR_DIVERGENTE = "O valor do pagamento não coincide com o valor da conta.";
+
+
     public void validarPagamento(PagamentoDTO pagamentoDTO, ContaDTO contaDTO) {
         if (contaDTO == null) {
-            throw new PagamentoInvalidoException("Conta não encontrada para o pagamento.");
+            throw new PagamentoInvalidoException(CONTA_NAO_ENCONTRADA);
         }
 
         if (SituacaoContaEnum.PAGA.equals(contaDTO.situacaoContaEnum())) {
-            throw new PagamentoInvalidoException("Esta conta já foi paga.");
+            throw new PagamentoInvalidoException(CONTA_PAGA);
         }
 
         if (SituacaoContaEnum.CANCELADA.equals(contaDTO.situacaoContaEnum())) {
-            throw new PagamentoInvalidoException("Esta conta foi cancelada.");
+            throw new PagamentoInvalidoException(CONTA_CANCELADA);
         }
 
         if (SituacaoContaEnum.VENCIDA.equals(contaDTO.situacaoContaEnum())) {
-            throw new PagamentoInvalidoException("Esta conta está vencida e não pode ser paga.");
+            throw new PagamentoInvalidoException(CONTA_VENCIDA);
         }
 
         if (!Objects.equals(pagamentoDTO.valor(), contaDTO.valor())) {
-            throw new PagamentoInvalidoException("O valor do pagamento não coincide com o valor da conta.");
+            throw new PagamentoInvalidoException(VALOR_DIVERGENTE);
         }
     }
 }

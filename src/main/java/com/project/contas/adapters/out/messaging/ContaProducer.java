@@ -15,9 +15,9 @@ public class ContaProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void enviarResposta(PagamentoRespostaDTO respostaDTO) {
-        this.rabbitTemplate.convertAndSend(CONTA_QUEUE, respostaDTO);
-        System.out.println("Resposta enviada para a fila: " + respostaDTO);
+    public void enviarResposta(PagamentoRespostaDTO pagamentoRespostaDTO) {
+        this.rabbitTemplate.convertAndSend(CONTA_QUEUE, pagamentoRespostaDTO);
+        System.out.println("Resposta enviada para a fila: " + pagamentoRespostaDTO);
     }
 }
 
