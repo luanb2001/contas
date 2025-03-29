@@ -1,9 +1,8 @@
 package com.project.contas.application.service;
 
 import com.project.contas.application.usecase.AtualizarContaUseCase;
-import com.project.contas.domain.repository.ContaRepository;
 import com.project.contas.domain.dto.ContaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,12 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AtualizarContaAppService implements AtualizarContaUseCase {
 
-    @Autowired
+    private final ContaRepository contaRepository;
+
     public AtualizarContaAppService(ContaRepository contaRepository) {
         this.contaRepository = contaRepository;
     }
-
-    private final ContaRepository contaRepository;
 
     @Override
     public void executar(ContaDTO contaDTO) {

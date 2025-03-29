@@ -2,9 +2,8 @@ package com.project.contas.application.service;
 
 import com.project.contas.application.usecase.CadastrarContaUseCase;
 import com.project.contas.domain.Conta;
-import com.project.contas.domain.repository.ContaRepository;
 import com.project.contas.domain.dto.CadastrarContaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +13,11 @@ import java.util.UUID;
 @Transactional
 public class CadastrarContaAppService implements CadastrarContaUseCase {
 
-    @Autowired
+    private final ContaRepository contaRepository;
+
     public CadastrarContaAppService(ContaRepository contaRepository){
         this.contaRepository = contaRepository;
     }
-
-    private final ContaRepository contaRepository;
 
     @Override
     public void executar(CadastrarContaDTO cadastrarContaDTO) {

@@ -21,7 +21,7 @@ public class BuscarContaPorIdAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executar() {
+    public void executar() {
         assertDoesNotThrow(() -> this.buscarContaPorIdAppService.executar(UUID.randomUUID()));
     }
 }

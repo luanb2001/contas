@@ -68,7 +68,7 @@ public class ContaControllerTest {
     private ImportarContasCSVUseCase importarContasUseCase;
 
     @Test
-    void cadastrarConta() throws Exception {
+    public void cadastrarConta() throws Exception {
         CadastrarContaDTO cadastrarContaDTO = new CadastrarContaDTO(
             DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR
         );
@@ -85,7 +85,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void atualizarConta() throws Exception {
+    public void atualizarConta() throws Exception {
         ContaDTO atualizarContaDTO = new ContaDTO(
                 UUID.randomUUID(), DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR
         );
@@ -102,7 +102,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void atualizarSituacaoConta() throws Exception {
+    public void atualizarSituacaoConta() throws Exception {
         AtualizarSituacaoContaDTO atualizarSituacaoDTO = new AtualizarSituacaoContaDTO(
                 UUID.randomUUID(), SituacaoContaEnum.PAGA
         );
@@ -119,7 +119,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void buscarContaPorId() throws Exception {
+    public void buscarContaPorId() throws Exception {
         UUID id = UUID.randomUUID();
         this.mock.perform(get("/conta/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -130,7 +130,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void listarContas() throws Exception {
+    public void listarContas() throws Exception {
         this.mock.perform(get("/conta/listar-contas?descricao=testeListarContas&data-vencimento-final=2024-09-20T12:00:00&data-vencimento-inicial=2024-09-20T12:00:00")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -140,7 +140,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void carregarValorPagoPorPeriodo() throws Exception {
+    public void carregarValorPagoPorPeriodo() throws Exception {
         this.mock.perform(get("/conta/carregar-valor-pago?data-inicial=2024-09-20T12:00:00&data-final=2024-09-20T12:00:00")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -150,7 +150,7 @@ public class ContaControllerTest {
     }
 
     @Test
-    void importarContas() throws Exception {
+    public void importarContas() throws Exception {
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "file",
                 "csv-exemplo-gerar-contas.csv",

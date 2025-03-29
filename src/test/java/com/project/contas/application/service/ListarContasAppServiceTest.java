@@ -22,7 +22,7 @@ public class ListarContasAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executar() {
+    public void executar() {
         assertDoesNotThrow(() -> this.listarContasAppService.executar(
                 LocalDateTime.now(),
                 LocalDateTime.now(),

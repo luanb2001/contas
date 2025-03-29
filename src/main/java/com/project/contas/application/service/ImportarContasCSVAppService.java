@@ -4,9 +4,8 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.project.contas.application.usecase.ImportarContasCSVUseCase;
 import com.project.contas.domain.Conta;
-import com.project.contas.domain.repository.ContaRepository;
 import com.project.contas.domain.dto.CadastrarContaCSV;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,12 +18,11 @@ import java.util.List;
 @Transactional
 public class ImportarContasCSVAppService implements ImportarContasCSVUseCase {
 
-    @Autowired
+    private final ContaRepository contaRepository;
+
     public ImportarContasCSVAppService(ContaRepository contaRepository) {
         this.contaRepository = contaRepository;
     }
-
-    private final ContaRepository contaRepository;
 
     @Override
     public Boolean executar(MultipartFile file) {

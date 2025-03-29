@@ -4,7 +4,6 @@ import com.project.contas.application.usecase.*;
 import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
 import com.project.contas.domain.dto.CadastrarContaDTO;
 import com.project.contas.domain.dto.ContaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @RequestMapping(value = "/conta")
 public class ContaController {
 
-	@Autowired
 	public ContaController(CadastrarContaUseCase cadastrarContaUseCase, AtualizarContaUseCase atualizarContaUseCase, AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase,
 						   BuscarContaPorIdUseCase buscarContaPorIdUseCase, ListarContasUseCase listarContasUseCase, CarregarValorPagoUseCase carregarValorPagoUseCase, ImportarContasCSVUseCase importarContasCSVUseCase) {
 		this.cadastrarContaUseCase = cadastrarContaUseCase;

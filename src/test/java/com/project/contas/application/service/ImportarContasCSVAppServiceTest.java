@@ -27,7 +27,7 @@ public class ImportarContasCSVAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executarDeveImportarComSucesso() throws Exception {
+    public void executarDeveImportarComSucesso() throws Exception {
         String csvContent = "descricao,valor\nConta Teste,100.00";
         InputStream inputStream = new ByteArrayInputStream(csvContent.getBytes());
         MultipartFile multipartFile = new MockMultipartFile("file.csv", "file.csv", "text/csv", inputStream);
@@ -39,7 +39,7 @@ public class ImportarContasCSVAppServiceTest {
     }
 
     @Test
-    void executarDeveRetornarFalseQuandoCSVInvalido() throws Exception {
+    public void executarDeveRetornarFalseQuandoCSVInvalido() throws Exception {
         InputStream inputStream = new ByteArrayInputStream("".getBytes());
         MultipartFile multipartFile = new MockMultipartFile("file.csv", inputStream);
 

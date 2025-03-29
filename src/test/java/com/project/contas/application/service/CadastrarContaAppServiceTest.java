@@ -25,7 +25,7 @@ public class CadastrarContaAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    void executar() {
+    public void executar() {
         CadastrarContaDTO cadastrarContaDTO = new CadastrarContaDTO(
                 LocalDateTime.now().plusDays(10),
                 LocalDateTime.now(),

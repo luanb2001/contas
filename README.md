@@ -2,6 +2,8 @@
 
 ## OBSERVAÇÃO
  - O projeto foi desenvolvido utilizando Java 17.
+ - É possível rodar o projeto de Pagamentos junto deste.
+ - PROJETO PAGAMENTOS - https://github.com/luanb2001/pagamentos
 
 ## ANOTAÇÕES
  - A coleção postman está localizada dentro da pasta raiz
