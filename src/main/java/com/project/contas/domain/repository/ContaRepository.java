@@ -1,13 +1,13 @@
 package com.project.contas.domain.repository;
 
+import com.project.contas.domain.Conta;
+import com.project.contas.domain.dto.ContaDTO;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.project.contas.domain.Conta;
-import com.project.contas.domain.dto.ContaDTO;
 
 public interface ContaRepository {
 

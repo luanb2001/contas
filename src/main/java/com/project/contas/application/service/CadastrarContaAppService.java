@@ -7,8 +7,6 @@ import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 @Transactional
 public class CadastrarContaAppService implements CadastrarContaUseCase {
@@ -21,14 +19,6 @@ public class CadastrarContaAppService implements CadastrarContaUseCase {
 
     @Override
     public void executar(CadastrarContaDTO cadastrarContaDTO) {
-        Conta conta = new Conta();
-        conta.setId(UUID.randomUUID());
-        conta.setDataVencimento(cadastrarContaDTO.dataVencimento());
-        conta.setDataPagamento(cadastrarContaDTO.dataPagamento());
-        conta.setDescricao(cadastrarContaDTO.descricao());
-        conta.setSituacao(cadastrarContaDTO.situacaoContaEnum());
-        conta.setValor(cadastrarContaDTO.valor());
-
-        this.contaRepository.save(conta);
+        this.contaRepository.save(Conta.cadastrarConta(cadastrarContaDTO));
     }
 }

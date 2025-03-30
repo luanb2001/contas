@@ -1,19 +1,14 @@
 package com.project.contas.domain;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import com.project.contas.domain.enums.SituacaoContaEnum;
 import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
 import com.project.contas.domain.dto.CadastrarContaCSV;
 import com.project.contas.domain.dto.CadastrarContaDTO;
 import com.project.contas.domain.dto.ContaDTO;
+import com.project.contas.domain.enums.SituacaoContaEnum;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "CONTA")

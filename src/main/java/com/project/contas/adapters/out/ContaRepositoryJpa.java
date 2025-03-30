@@ -1,16 +1,15 @@
 package com.project.contas.adapters.out;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
+import com.project.contas.domain.Conta;
+import com.project.contas.domain.dto.ContaDTO;
+import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.project.contas.domain.Conta;
-import com.project.contas.domain.repository.ContaRepository;
-import com.project.contas.domain.dto.ContaDTO;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 public interface ContaRepositoryJpa extends ContaRepository, CrudRepository<Conta, UUID> {
 	
