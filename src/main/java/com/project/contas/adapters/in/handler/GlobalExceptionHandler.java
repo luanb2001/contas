@@ -1,6 +1,7 @@
 package com.project.contas.adapters.in.handler;
 
 import com.project.contas.application.exception.RegraNegocioException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,14 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         return ResponseEntity.badRequest()
                 .body(new ApiErrorResponse(mensagem, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ApiErrorResponse(
+                        "Não é possível excluir este registro pois ele está vinculado a outros dados.",
+                        LocalDateTime.now()));
     }
 
     @ExceptionHandler(Exception.class)

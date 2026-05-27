@@ -28,6 +28,11 @@ public class ImportarContasCSVAppService implements ImportarContasCSVUseCase {
 
     @Override
     public UUID executar(MultipartFile file) {
+        String nomeArquivo = file.getOriginalFilename();
+        if (nomeArquivo == null || !nomeArquivo.toLowerCase().endsWith(".csv")) {
+            throw new RegraNegocioException("O arquivo enviado não é um CSV.");
+        }
+
         try {
             ImportacaoConta importacao = ImportacaoConta.iniciar();
             importacaoContaRepository.save(importacao);
