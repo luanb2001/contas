@@ -78,9 +78,29 @@ curl -X POST http://localhost:8080/fornecedor \
   -d '{"nome": "Fornecedor XPTO"}'
 ```
 
+#### Listar fornecedores (paginado)
+```bash
+curl "http://localhost:8080/fornecedor?pagina=0&maximo-por-pagina=10" \
+  -H "Authorization: Bearer <token>"
+```
+
 #### Buscar fornecedor por ID
 ```bash
 curl http://localhost:8080/fornecedor/{id} \
+  -H "Authorization: Bearer <token>"
+```
+
+#### Atualizar fornecedor
+```bash
+curl -X PUT http://localhost:8080/fornecedor/{id} \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "Novo Nome"}'
+```
+
+#### Deletar fornecedor
+```bash
+curl -X DELETE http://localhost:8080/fornecedor/{id} \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -135,6 +155,12 @@ curl http://localhost:8080/conta/{id} \
   -H "Authorization: Bearer <token>"
 ```
 
+#### Deletar conta
+```bash
+curl -X DELETE http://localhost:8080/conta/{id} \
+  -H "Authorization: Bearer <token>"
+```
+
 #### Listar contas (paginado com filtros)
 ```bash
 curl "http://localhost:8080/conta/listar-contas?data-vencimento-inicial=2024-01-01T00:00:00&data-vencimento-final=2025-12-31T23:59:59&descricao=luz&pagina=0&maximo-por-pagina=10" \
@@ -160,6 +186,14 @@ Retorna um `UUID` de protocolo. Use-o para acompanhar o status da importação:
 curl http://localhost:8080/importacao/{protocolo-id} \
   -H "Authorization: Bearer <token>"
 ```
+
+#### Listar importações (paginado)
+```bash
+curl "http://localhost:8080/importacao?pagina=0&maximo-por-pagina=10" \
+  -H "Authorization: Bearer <token>"
+```
+
+A resposta inclui os campos `mensagemErro` (falha fatal no parse) e `detalhesErros` (falhas parciais por linha).
 
 **Formato do CSV:**
 ```csv
@@ -202,6 +236,7 @@ Migrações versionadas em `src/main/resources/db/migration/`:
 - `V3` – Adição da FK `fornecedor_id` em `conta`
 - `V4` – Criação da tabela `importacao_conta`
 - `V5` – Migração da coluna `situacao` de SMALLINT para VARCHAR
+- `V6` – Adição da coluna `detalhes_erros` em `importacao_conta`
 
 ---
 

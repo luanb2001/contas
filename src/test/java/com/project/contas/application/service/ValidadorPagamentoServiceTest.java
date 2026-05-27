@@ -30,7 +30,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void devePermitirPagamentoValido() {
+    public void validarPagamento_quandoDadosValidos_naoLancaExcecao() {
         ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
@@ -38,7 +38,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoContaNaoForEncontrada() {
+    public void validarPagamento_quandoContaNula_lancaExcecao() {
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, null, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         PagamentoInvalidoException exception = assertThrows(
@@ -50,7 +50,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoContaJaFoiPaga() {
+    public void validarPagamento_quandoContaPaga_lancaExcecao() {
         ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.PAGA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
@@ -63,7 +63,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoContaFoiCancelada() {
+    public void validarPagamento_quandoContaCancelada_lancaExcecao() {
         ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.CANCELADA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
@@ -76,7 +76,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoContaEstaVencida() {
+    public void validarPagamento_quandoContaVencida_lancaExcecao() {
         ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.VENCIDA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
@@ -89,7 +89,7 @@ public class ValidadorPagamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoValorDoPagamentoNaoCoincide() {
+    public void validarPagamento_quandoValorDivergente_lancaExcecao() {
         ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA, BigDecimal.valueOf(99.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 

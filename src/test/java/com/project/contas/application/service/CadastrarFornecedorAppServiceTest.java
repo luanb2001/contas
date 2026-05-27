@@ -23,7 +23,7 @@ public class CadastrarFornecedorAppServiceTest {
     private FornecedorRepository fornecedorRepository;
 
     @Test
-    public void executar() {
+    public void executar_quandoDadosValidos_salvaNoBanco() {
         CadastrarFornecedorDTO dto = new CadastrarFornecedorDTO("Fornecedor Teste");
 
         assertDoesNotThrow(() -> this.cadastrarFornecedorAppService.executar(dto));

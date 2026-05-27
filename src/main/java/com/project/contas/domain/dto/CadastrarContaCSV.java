@@ -3,12 +3,16 @@ package com.project.contas.domain.dto;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import com.project.contas.domain.enums.SituacaoContaEnum;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CadastrarContaCSV {
 
+    @NotNull
     @CsvDate(value = "yyyy-MM-dd HH:mm:ss")
     @CsvBindByName(column = "dataVencimento")
     private LocalDateTime dataVencimento;
@@ -17,15 +21,20 @@ public class CadastrarContaCSV {
     @CsvBindByName(column = "dataPagamento")
     private LocalDateTime dataPagamento;
 
+    @NotBlank
     @CsvBindByName(column = "descricao")
     private String descricao;
 
+    @NotNull
     @CsvBindByName(column = "situacaoContaEnum")
     private SituacaoContaEnum situacaoContaEnum;
 
+    @NotNull
+    @Positive
     @CsvBindByName(column = "valor")
     private BigDecimal valor;
 
+    @NotBlank
     @CsvBindByName(column = "fornecedorId")
     private String fornecedorId;
 

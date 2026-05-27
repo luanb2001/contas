@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FornecedorTest {
 
     @Test
-    public void testCadastrarFornecedor() {
+    public void cadastrarFornecedor_quandoNomeValido_criaFornecedorCorretamente() {
         String nome = "Fornecedor Teste";
         Fornecedor fornecedor = Fornecedor.cadastrarFornecedor(nome);
 

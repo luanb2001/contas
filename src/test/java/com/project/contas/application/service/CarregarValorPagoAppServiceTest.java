@@ -21,7 +21,7 @@ public class CarregarValorPagoAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    public void executar() {
+    public void executar_retornaValorPagoPorPeriodo() {
         assertDoesNotThrow(() -> this.carregarValorPagoAppService.executar(LocalDateTime.now(), LocalDateTime.now().plusDays(10)));
     }
 }

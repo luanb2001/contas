@@ -12,7 +12,9 @@ public record ImportacaoContaDTO(
         LocalDateTime dataCriacao,
         Integer totalRegistros,
         Integer totalProcessados,
-        Integer totalFalhas
+        Integer totalFalhas,
+        String mensagemErro,
+        String detalhesErros
 ) {
     public static ImportacaoContaDTO fromEntity(ImportacaoConta importacao) {
         return new ImportacaoContaDTO(
@@ -21,7 +23,9 @@ public record ImportacaoContaDTO(
                 importacao.getDataCriacao(),
                 importacao.getTotalRegistros(),
                 importacao.getTotalProcessados(),
-                importacao.getTotalFalhas()
+                importacao.getTotalFalhas(),
+                importacao.getMensagemErro(),
+                importacao.getDetalhesErros()
         );
     }
 }

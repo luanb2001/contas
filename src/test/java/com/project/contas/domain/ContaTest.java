@@ -34,7 +34,7 @@ public class ContaTest {
     }
 
     @Test
-    public void testCadastrarContaComParametros() {
+    public void cadastrarConta_comParametros_criaContaCorretamente() {
         LocalDateTime dataVencimento = LocalDateTime.now().plusDays(30);
         LocalDateTime dataPagamento = LocalDateTime.now().plusDays(15);
         String descricao = "Teste DTO";
@@ -53,7 +53,7 @@ public class ContaTest {
     }
 
     @Test
-    public void testCadastrarContaComCadastrarContaCSV() {
+    public void cadastrarConta_comCSV_criaContaCorretamente() {
         CadastrarContaCSV cadastrarContaCSV = this.mockCadastrarContaCSV();
         Conta novaConta = Conta.cadastrarConta(cadastrarContaCSV, fornecedor);
         assertNotNull(novaConta);
@@ -65,7 +65,7 @@ public class ContaTest {
     }
 
     @Test
-    public void testAtualizarConta() {
+    public void atualizar_quandoContaAberta_atualizaDados() {
         LocalDateTime dataVencimento = LocalDateTime.now().plusDays(10);
         BigDecimal valor = BigDecimal.valueOf(150);
         this.conta.atualizar(dataVencimento, LocalDateTime.now().plusDays(5),
@@ -76,34 +76,75 @@ public class ContaTest {
     }
 
     @Test
-    public void testPagar() {
+    public void pagar_quandoContaAberta_marcaComoPaga() {
         this.conta.pagar();
         assertEquals(SituacaoContaEnum.PAGA, this.conta.getSituacao());
         assertNotNull(this.conta.getDataPagamento());
     }
 
     @Test
-    public void testPagar_contaJaPaga_lancaExcecao() {
+    public void pagar_quandoContaJaPaga_lancaExcecao() {
         this.conta.setSituacao(SituacaoContaEnum.PAGA);
         assertThrows(RegraNegocioException.class, () -> this.conta.pagar());
     }
 
     @Test
-    public void testPagar_contaCancelada_lancaExcecao() {
+    public void pagar_quandoContaCancelada_lancaExcecao() {
         this.conta.setSituacao(SituacaoContaEnum.CANCELADA);
         assertThrows(RegraNegocioException.class, () -> this.conta.pagar());
     }
 
     @Test
-    public void testCancelar() {
+    public void cancelar_quandoContaAberta_marcaComoCancelada() {
         this.conta.cancelar();
         assertEquals(SituacaoContaEnum.CANCELADA, this.conta.getSituacao());
     }
 
     @Test
-    public void testCancelar_contaPaga_lancaExcecao() {
+    public void cancelar_quandoContaPaga_lancaExcecao() {
         this.conta.setSituacao(SituacaoContaEnum.PAGA);
         assertThrows(RegraNegocioException.class, () -> this.conta.cancelar());
+    }
+
+    @Test
+    public void atualizar_quandoContaPaga_lancaExcecao() {
+        this.conta.setSituacao(SituacaoContaEnum.PAGA);
+        assertThrows(RegraNegocioException.class, () ->
+                this.conta.atualizar(LocalDateTime.now().plusDays(10), null, "desc",
+                        SituacaoContaEnum.ABERTA, BigDecimal.valueOf(50), fornecedor));
+    }
+
+    @Test
+    public void atualizar_quandoContaCancelada_lancaExcecao() {
+        this.conta.setSituacao(SituacaoContaEnum.CANCELADA);
+        assertThrows(RegraNegocioException.class, () ->
+                this.conta.atualizar(LocalDateTime.now().plusDays(10), null, "desc",
+                        SituacaoContaEnum.ABERTA, BigDecimal.valueOf(50), fornecedor));
+    }
+
+    @Test
+    public void abrir_quandoContaVencida_retornaAberta() {
+        this.conta.setSituacao(SituacaoContaEnum.VENCIDA);
+        this.conta.abrir();
+        assertEquals(SituacaoContaEnum.ABERTA, this.conta.getSituacao());
+    }
+
+    @Test
+    public void abrir_quandoContaPaga_lancaExcecao() {
+        this.conta.setSituacao(SituacaoContaEnum.PAGA);
+        assertThrows(RegraNegocioException.class, () -> this.conta.abrir());
+    }
+
+    @Test
+    public void vencer_quandoContaAberta_retornaVencida() {
+        this.conta.vencer();
+        assertEquals(SituacaoContaEnum.VENCIDA, this.conta.getSituacao());
+    }
+
+    @Test
+    public void vencer_quandoContaPaga_lancaExcecao() {
+        this.conta.setSituacao(SituacaoContaEnum.PAGA);
+        assertThrows(RegraNegocioException.class, () -> this.conta.vencer());
     }
 
     private CadastrarContaCSV mockCadastrarContaCSV() {

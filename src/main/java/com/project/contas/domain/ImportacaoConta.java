@@ -30,6 +30,9 @@ public class ImportacaoConta {
     private Integer totalFalhas;
     private String mensagemErro;
 
+    @Column(columnDefinition = "TEXT")
+    private String detalhesErros;
+
     protected ImportacaoConta() {
     }
 
@@ -46,10 +49,11 @@ public class ImportacaoConta {
         this.dataInicioProcessamento = LocalDateTime.now();
     }
 
-    public void finalizar(int totalRegistros, int totalProcessados, int totalFalhas) {
+    public void finalizar(int totalRegistros, int totalProcessados, int totalFalhas, String detalhesErros) {
         this.totalRegistros = totalRegistros;
         this.totalProcessados = totalProcessados;
         this.totalFalhas = totalFalhas;
+        this.detalhesErros = detalhesErros;
         this.dataFimProcessamento = LocalDateTime.now();
         this.status = totalFalhas > 0
                 ? StatusImportacaoEnum.FINALIZADA_COM_ERROS
@@ -96,5 +100,9 @@ public class ImportacaoConta {
 
     public String getMensagemErro() {
         return mensagemErro;
+    }
+
+    public String getDetalhesErros() {
+        return detalhesErros;
     }
 }

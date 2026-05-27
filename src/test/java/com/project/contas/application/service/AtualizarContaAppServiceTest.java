@@ -29,7 +29,7 @@ public class AtualizarContaAppServiceTest {
     private FornecedorRepository fornecedorRepository;
 
     @Test
-    public void executar() {
+    public void executar_quandoContaExiste_atualizaDados() {
         UUID fornecedorId = UUID.randomUUID();
         ContaDTO contaDTO = new ContaDTO(
                 UUID.randomUUID(),

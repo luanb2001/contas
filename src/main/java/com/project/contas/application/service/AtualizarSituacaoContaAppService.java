@@ -1,5 +1,6 @@
 package com.project.contas.application.service;
 
+import com.project.contas.application.exception.RegraNegocioException;
 import com.project.contas.application.usecase.AtualizarSituacaoContaUseCase;
 import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
 import com.project.contas.domain.enums.SituacaoContaEnum;
@@ -20,12 +21,12 @@ public class AtualizarSituacaoContaAppService implements AtualizarSituacaoContaU
     @Override
     public void executar(AtualizarSituacaoContaDTO dto) {
         this.contaRepository.findById(dto.id()).ifPresent(conta -> {
-            if (SituacaoContaEnum.PAGA.equals(dto.situacaoContaEnum())) {
-                conta.pagar();
-            } else if (SituacaoContaEnum.CANCELADA.equals(dto.situacaoContaEnum())) {
-                conta.cancelar();
-            } else {
-                conta.setSituacao(dto.situacaoContaEnum());
+            switch (dto.situacaoContaEnum()) {
+                case PAGA -> conta.pagar();
+                case CANCELADA -> conta.cancelar();
+                case ABERTA -> conta.abrir();
+                case VENCIDA -> conta.vencer();
+                default -> throw new RegraNegocioException("Situação inválida: " + dto.situacaoContaEnum());
             }
             this.contaRepository.save(conta);
         });

@@ -69,6 +69,9 @@ public class Conta {
     public Conta atualizar(LocalDateTime dataVencimento, LocalDateTime dataPagamento,
                            String descricao, SituacaoContaEnum situacao,
                            BigDecimal valor, Fornecedor fornecedor) {
+        if (SituacaoContaEnum.PAGA.equals(this.situacao) || SituacaoContaEnum.CANCELADA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta já finalizada não pode ser atualizada");
+        }
         this.dataVencimento = dataVencimento;
         this.dataPagamento = dataPagamento;
         this.descricao = descricao;
@@ -94,6 +97,20 @@ public class Conta {
             throw new RegraNegocioException("Conta paga não pode ser cancelada");
         }
         this.situacao = SituacaoContaEnum.CANCELADA;
+    }
+
+    public void abrir() {
+        if (SituacaoContaEnum.PAGA.equals(this.situacao) || SituacaoContaEnum.CANCELADA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta já finalizada não pode ser reaberta");
+        }
+        this.situacao = SituacaoContaEnum.ABERTA;
+    }
+
+    public void vencer() {
+        if (SituacaoContaEnum.PAGA.equals(this.situacao) || SituacaoContaEnum.CANCELADA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta já finalizada não pode ser marcada como vencida");
+        }
+        this.situacao = SituacaoContaEnum.VENCIDA;
     }
 
     public UUID getId() {

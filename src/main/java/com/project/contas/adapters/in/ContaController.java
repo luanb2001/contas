@@ -29,11 +29,13 @@ public class ContaController {
     private final ListarContasUseCase listarContasUseCase;
     private final CarregarValorPagoUseCase carregarValorPagoUseCase;
     private final ImportarContasCSVUseCase importarContasCSVUseCase;
+    private final DeletarContaUseCase deletarContaUseCase;
 
     public ContaController(CadastrarContaUseCase cadastrarContaUseCase, AtualizarContaUseCase atualizarContaUseCase,
                            AtualizarSituacaoContaUseCase atualizarSituacaoContaUseCase,
                            BuscarContaPorIdUseCase buscarContaPorIdUseCase, ListarContasUseCase listarContasUseCase,
-                           CarregarValorPagoUseCase carregarValorPagoUseCase, ImportarContasCSVUseCase importarContasCSVUseCase) {
+                           CarregarValorPagoUseCase carregarValorPagoUseCase, ImportarContasCSVUseCase importarContasCSVUseCase,
+                           DeletarContaUseCase deletarContaUseCase) {
         this.cadastrarContaUseCase = cadastrarContaUseCase;
         this.atualizarContaUseCase = atualizarContaUseCase;
         this.atualizarSituacaoContaUseCase = atualizarSituacaoContaUseCase;
@@ -41,6 +43,7 @@ public class ContaController {
         this.listarContasUseCase = listarContasUseCase;
         this.carregarValorPagoUseCase = carregarValorPagoUseCase;
         this.importarContasCSVUseCase = importarContasCSVUseCase;
+        this.deletarContaUseCase = deletarContaUseCase;
     }
 
     @PostMapping
@@ -89,5 +92,11 @@ public class ContaController {
     @PostMapping(path = "/importar-conta")
     public ResponseEntity<UUID> importarContasCSV(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(this.importarContasCSVUseCase.executar(file));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deletarConta(@PathVariable UUID id) {
+        this.deletarContaUseCase.executar(id);
+        return ResponseEntity.noContent().build();
     }
 }

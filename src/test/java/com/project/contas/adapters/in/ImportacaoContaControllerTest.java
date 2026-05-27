@@ -31,7 +31,7 @@ public class ImportacaoContaControllerTest {
     @Test
     public void buscarImportacao() throws Exception {
         UUID id = UUID.randomUUID();
-        ImportacaoContaDTO dto = new ImportacaoContaDTO(id, StatusImportacaoEnum.FINALIZADA, LocalDateTime.now(), 1, 1, 0);
+        ImportacaoContaDTO dto = new ImportacaoContaDTO(id, StatusImportacaoEnum.FINALIZADA, LocalDateTime.now(), 1, 1, 0, null, null);
         when(buscarImportacaoContaUseCase.executar(id)).thenReturn(dto);
 
         this.mock.perform(get("/importacao/" + id)

@@ -20,8 +20,9 @@ public interface ContaRepositoryJpa extends ContaRepository, CrudRepository<Cont
 
     @Query("SELECT new com.project.contas.domain.dto.ContaDTO(o.id, o.dataVencimento, o.dataPagamento, o.descricao, o.situacao, o.valor, f.id, f.nome)"
             + " FROM Conta o JOIN o.fornecedor f"
-            + " WHERE (o.dataVencimento BETWEEN :dataVencimentoInicial AND :dataVencimentoFinal)"
-            + " AND (:descricao IS NULL OR o.descricao LIKE %:descricao%)")
+            + " WHERE (cast(:dataVencimentoInicial as LocalDateTime) IS NULL OR o.dataVencimento >= :dataVencimentoInicial)"
+            + " AND (cast(:dataVencimentoFinal as LocalDateTime) IS NULL OR o.dataVencimento <= :dataVencimentoFinal)"
+            + " AND (cast(:descricao as String) IS NULL OR o.descricao LIKE %:descricao%)")
     List<ContaDTO> listarContasPorFiltro(LocalDateTime dataVencimentoInicial, LocalDateTime dataVencimentoFinal,
                                          String descricao, Pageable pageable);
 

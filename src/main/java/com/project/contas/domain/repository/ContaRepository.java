@@ -21,4 +21,6 @@ public interface ContaRepository {
 
     List<ContaDTO> listarContasPorFiltro(LocalDateTime dataVencimentoInicial, LocalDateTime dataVencimentoFinal, String descricao, Pageable pageable);
 
+    void deleteById(UUID id);
+
 }

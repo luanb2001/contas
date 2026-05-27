@@ -35,7 +35,7 @@ public class CadastrarContaAppServiceTest {
     private FornecedorRepository fornecedorRepository;
 
     @Test
-    public void executar() {
+    public void executar_quandoFornecedorExiste_salvaContaNoBanco() {
         Fornecedor fornecedor = Fornecedor.cadastrarFornecedor("Fornecedor Teste");
         when(fornecedorRepository.findById(fornecedor.getId())).thenReturn(Optional.of(fornecedor));
 

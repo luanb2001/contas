@@ -22,7 +22,7 @@ public class ListarContasAppServiceTest {
     private ContaRepository contaRepository;
 
     @Test
-    public void executar() {
+    public void executar_retornaListaPaginada() {
         assertDoesNotThrow(() -> this.listarContasAppService.executar(
                 LocalDateTime.now(),
                 LocalDateTime.now(),

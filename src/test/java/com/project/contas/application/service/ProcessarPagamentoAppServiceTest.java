@@ -55,7 +55,7 @@ public class ProcessarPagamentoAppServiceTest {
     }
 
     @Test
-    public void deveProcessarPagamentoComSucesso() {
+    public void executar_quandoPagamentoValido_atualizaSituacaoEEnviaConfirmacao() {
         when(this.buscarContaPorIdUseCase.executar(this.pagamentoDTO.contaId())).thenReturn(this.contaDTO);
         doNothing().when(this.validadorPagamentoService).validarPagamento(this.pagamentoDTO, this.contaDTO);
 
@@ -68,7 +68,7 @@ public class ProcessarPagamentoAppServiceTest {
     }
 
     @Test
-    public void deveRejeitarPagamentoQuandoInvalido() {
+    public void executar_quandoPagamentoInvalido_naoAtualizaSituacaoEEnviaRecusa() {
         when(this.buscarContaPorIdUseCase.executar(this.pagamentoDTO.contaId())).thenReturn(this.contaDTO);
         doThrow(new PagamentoInvalidoException("Erro de validação")).when(this.validadorPagamentoService).validarPagamento(this.pagamentoDTO, this.contaDTO);
 
