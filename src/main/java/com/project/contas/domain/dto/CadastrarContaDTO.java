@@ -1,13 +1,19 @@
 package com.project.contas.domain.dto;
 
-import java.time.LocalDateTime;
-
 import com.project.contas.domain.enums.SituacaoContaEnum;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record CadastrarContaDTO(
-        LocalDateTime dataVencimento,
+        @NotNull LocalDateTime dataVencimento,
         LocalDateTime dataPagamento,
-        String descricao,
-        SituacaoContaEnum situacaoContaEnum,
-        Double valor
+        @NotBlank String descricao,
+        @NotNull SituacaoContaEnum situacaoContaEnum,
+        @NotNull @Positive BigDecimal valor,
+        @NotNull UUID fornecedorId
 ) {}

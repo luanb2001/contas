@@ -11,14 +11,14 @@ import java.util.UUID;
 
 public interface ContaRepository {
 
-    public Conta save(Conta conta);
+    Conta save(Conta conta);
 
-    public Optional<Conta> findById(UUID id);
-    
-    public ContaDTO buscarContaDTOPorId(UUID id);
+    Optional<Conta> findById(UUID id);
 
-    public Double carregarValorPagoPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal);
+    ContaDTO buscarContaDTOPorId(UUID id);
 
-    public List<ContaDTO> listarContasPorFiltro(LocalDateTime dataVencimentoInicial, LocalDateTime dataVencimentoFinal, String descricao, Pageable pageable);
+    java.math.BigDecimal carregarValorPagoPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    List<ContaDTO> listarContasPorFiltro(LocalDateTime dataVencimentoInicial, LocalDateTime dataVencimentoFinal, String descricao, Pageable pageable);
 
 }

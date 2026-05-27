@@ -1,2 +1,2 @@
-dataVencimento,dataPagamento,descricao,situacaoContaEnum,valor
-2024-09-20 12:00:00,,Conta de luz,ABERTA,175.50
+dataVencimento,dataPagamento,descricao,situacaoContaEnum,valor,fornecedorId
+2024-09-20 12:00:00,,Conta de luz,ABERTA,175.50,00000000-0000-0000-0000-000000000001

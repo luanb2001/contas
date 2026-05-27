@@ -1,13 +1,16 @@
 package com.project.contas.application.service;
 
-import com.project.contas.domain.repository.ContaRepository;
 import com.project.contas.domain.dto.ContaDTO;
+import com.project.contas.domain.enums.SituacaoContaEnum;
+import com.project.contas.domain.repository.ContaRepository;
+import com.project.contas.domain.repository.FornecedorRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,15 +25,21 @@ public class AtualizarContaAppServiceTest {
     @Mock
     private ContaRepository contaRepository;
 
+    @Mock
+    private FornecedorRepository fornecedorRepository;
+
     @Test
     public void executar() {
+        UUID fornecedorId = UUID.randomUUID();
         ContaDTO contaDTO = new ContaDTO(
                 UUID.randomUUID(),
                 LocalDateTime.now().plusDays(10),
                 LocalDateTime.now(),
                 "Conta de água",
-                null,
-                100.00
+                SituacaoContaEnum.ABERTA,
+                BigDecimal.valueOf(100),
+                fornecedorId,
+                "Fornecedor Teste"
         );
 
         assertDoesNotThrow(() -> this.atualizarContaAppService.executar(contaDTO));

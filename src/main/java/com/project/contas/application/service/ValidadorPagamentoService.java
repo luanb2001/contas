@@ -35,7 +35,7 @@ public class ValidadorPagamentoService {
             throw new PagamentoInvalidoException(CONTA_VENCIDA);
         }
 
-        if (!Objects.equals(pagamentoDTO.valor(), contaDTO.valor())) {
+        if (!Objects.equals(pagamentoDTO.valor(), contaDTO.valor() != null ? contaDTO.valor().doubleValue() : null)) {
             throw new PagamentoInvalidoException(VALOR_DIVERGENTE);
         }
     }

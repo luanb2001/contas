@@ -8,6 +8,7 @@ import com.project.contas.domain.enums.StatusPagamentoEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class ValidadorPagamentoServiceTest {
 
     @Test
     public void devePermitirPagamentoValido() {
-        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA,  100.0);
+        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         assertDoesNotThrow(() -> this.validadorPagamentoService.validarPagamento(pagamentoDTO, contaDTO));
@@ -50,7 +51,7 @@ public class ValidadorPagamentoServiceTest {
 
     @Test
     public void deveLancarExcecaoQuandoContaJaFoiPaga() {
-        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.PAGA,  100.0);
+        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.PAGA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         PagamentoInvalidoException exception = assertThrows(
@@ -63,7 +64,7 @@ public class ValidadorPagamentoServiceTest {
 
     @Test
     public void deveLancarExcecaoQuandoContaFoiCancelada() {
-        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.CANCELADA,  100.0);
+        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.CANCELADA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         PagamentoInvalidoException exception = assertThrows(
@@ -76,7 +77,7 @@ public class ValidadorPagamentoServiceTest {
 
     @Test
     public void deveLancarExcecaoQuandoContaEstaVencida() {
-        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.VENCIDA,  100.0);
+        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.VENCIDA, BigDecimal.valueOf(100.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         PagamentoInvalidoException exception = assertThrows(
@@ -89,7 +90,7 @@ public class ValidadorPagamentoServiceTest {
 
     @Test
     public void deveLancarExcecaoQuandoValorDoPagamentoNaoCoincide() {
-        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA,  99.0);
+        ContaDTO contaDTO = new ContaDTO(this.contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA, BigDecimal.valueOf(99.0), null, null);
         PagamentoDTO pagamentoDTO = new PagamentoDTO(this.pagamentoId, this.contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
 
         PagamentoInvalidoException exception = assertThrows(

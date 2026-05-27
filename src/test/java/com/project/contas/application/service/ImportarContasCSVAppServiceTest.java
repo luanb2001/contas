@@ -1,21 +1,23 @@
 package com.project.contas.application.service;
 
-import com.project.contas.domain.Conta;
-import com.project.contas.domain.repository.ContaRepository;
+import com.project.contas.adapters.out.messaging.ImportacaoContaProducer;
+import com.project.contas.domain.ImportacaoConta;
+import com.project.contas.domain.dto.ImportarContasCSVMessage;
+import com.project.contas.domain.repository.ImportacaoContaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ImportarContasCSVAppServiceTest {
@@ -24,26 +26,23 @@ public class ImportarContasCSVAppServiceTest {
     private ImportarContasCSVAppService importarContasCSVAppService;
 
     @Mock
-    private ContaRepository contaRepository;
+    private ImportacaoContaRepository importacaoContaRepository;
+
+    @Mock
+    private ImportacaoContaProducer importacaoContaProducer;
 
     @Test
-    public void executarDeveImportarComSucesso() throws Exception {
-        String csvContent = "descricao,valor\nConta Teste,100.00";
-        InputStream inputStream = new ByteArrayInputStream(csvContent.getBytes());
-        MultipartFile multipartFile = new MockMultipartFile("file.csv", "file.csv", "text/csv", inputStream);
+    public void executar_criaImportacaoEPublicaMensagem() {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "contas.csv", "text/csv",
+                "dataVencimento,dataPagamento,descricao,situacaoContaEnum,valor,fornecedorId\n".getBytes());
 
-        Boolean resultado = this.importarContasCSVAppService.executar(multipartFile);
-        assertTrue(resultado);
+        when(importacaoContaRepository.save(any(ImportacaoConta.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        verify(this.contaRepository).save(any(Conta.class));
-    }
+        UUID protocolo = importarContasCSVAppService.executar(file);
 
-    @Test
-    public void executarDeveRetornarFalseQuandoCSVInvalido() throws Exception {
-        InputStream inputStream = new ByteArrayInputStream("".getBytes());
-        MultipartFile multipartFile = new MockMultipartFile("file.csv", inputStream);
-
-        Boolean resultado = this.importarContasCSVAppService.executar(multipartFile);
-        assertFalse(resultado);
+        assertNotNull(protocolo);
+        verify(importacaoContaRepository).save(any(ImportacaoConta.class));
+        verify(importacaoContaProducer).enviarMensagem(any(ImportarContasCSVMessage.class));
     }
 }

@@ -30,6 +30,8 @@ import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
 import com.project.contas.domain.dto.CadastrarContaDTO;
 import com.project.contas.domain.dto.ContaDTO;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class ContaControllerTest {
@@ -38,7 +40,7 @@ public class ContaControllerTest {
     public static final LocalDateTime DATA_PAGAMENTO = LocalDateTime.now();
     public static final String DESCRICAO = "Conta de internet";
     public static final SituacaoContaEnum SITUACAO_CONTA = SituacaoContaEnum.ABERTA;
-    public static final Double VALOR = 170.00;
+    public static final BigDecimal VALOR = BigDecimal.valueOf(170.00);
 
     @Autowired
     private MockMvc mock;
@@ -70,7 +72,7 @@ public class ContaControllerTest {
     @Test
     public void cadastrarConta() throws Exception {
         CadastrarContaDTO cadastrarContaDTO = new CadastrarContaDTO(
-            DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR
+            DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR, UUID.randomUUID()
         );
 
         String dto = this.mapper.writeValueAsString(cadastrarContaDTO);
@@ -87,7 +89,7 @@ public class ContaControllerTest {
     @Test
     public void atualizarConta() throws Exception {
         ContaDTO atualizarContaDTO = new ContaDTO(
-                UUID.randomUUID(), DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR
+                UUID.randomUUID(), DATA_VENCIMENTO, DATA_PAGAMENTO, DESCRICAO, SITUACAO_CONTA, VALOR, UUID.randomUUID(), "Fornecedor Teste"
         );
 
         String dto = this.mapper.writeValueAsString(atualizarContaDTO);

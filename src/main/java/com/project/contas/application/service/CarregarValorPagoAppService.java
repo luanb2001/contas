@@ -4,6 +4,7 @@ import com.project.contas.application.usecase.CarregarValorPagoUseCase;
 import com.project.contas.domain.repository.ContaRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -16,7 +17,7 @@ public class CarregarValorPagoAppService implements CarregarValorPagoUseCase {
     }
 
     @Override
-    public Double executar(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+    public BigDecimal executar(LocalDateTime dataInicial, LocalDateTime dataFinal) {
         return this.contaRepository.carregarValorPagoPorPeriodo(dataInicial, dataFinal);
     }
 }

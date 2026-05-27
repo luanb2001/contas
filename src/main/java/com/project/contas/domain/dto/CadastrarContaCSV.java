@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import com.project.contas.domain.enums.SituacaoContaEnum;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CadastrarContaCSV {
@@ -23,7 +24,10 @@ public class CadastrarContaCSV {
     private SituacaoContaEnum situacaoContaEnum;
 
     @CsvBindByName(column = "valor")
-    private Double valor;
+    private BigDecimal valor;
+
+    @CsvBindByName(column = "fornecedorId")
+    private String fornecedorId;
 
     public LocalDateTime getDataVencimento() {
         return dataVencimento;
@@ -33,11 +37,11 @@ public class CadastrarContaCSV {
         this.dataVencimento = dataVencimento;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
@@ -63,5 +67,13 @@ public class CadastrarContaCSV {
 
     public void setDataPagamento(LocalDateTime dataPagamento) {
         this.dataPagamento = dataPagamento;
+    }
+
+    public String getFornecedorId() {
+        return fornecedorId;
+    }
+
+    public void setFornecedorId(String fornecedorId) {
+        this.fornecedorId = fornecedorId;
     }
 }

@@ -1,18 +1,18 @@
 package com.project.contas.infrastructure.config;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.UUID;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.contas.domain.dto.LoginDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,30 +22,31 @@ public class SecurityConfigTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private ObjectMapper objectMapper;
 
     @Test
     public void testAccessProtectedUrlWithoutAuthentication() throws Exception {
-        this.mockMvc.perform(get("/conta"))
-            .andExpect(status().isUnauthorized());
+        this.mockMvc.perform(get("/conta/listar-contas"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testAccessProtectedUrlWithAuthentication() throws Exception {
-    	 UUID contaId = UUID.randomUUID();
+    public void testLoginReturnsToken() throws Exception {
+        LoginDTO loginDTO = new LoginDTO("desafio", "contas");
 
-        this.mockMvc.perform(get("/conta/" + contaId)
-            .with(httpBasic("desafio", "contas")))
-            .andExpect(status().isOk())
-            .andExpect(authenticated().withUsername("desafio").withRoles("ADMIN"));
+        MvcResult result = this.mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        assert body.contains("token");
     }
 
     @Test
-    public void testUserDetailsService() throws Exception {
-        String rawPassword = "contas";
-        String encodedPassword = this.passwordEncoder.encode(rawPassword);
-        boolean matches = this.passwordEncoder.matches(rawPassword, encodedPassword);
-        
-        assert(matches);
+    public void testSwaggerPermitidoSemAutenticacao() throws Exception {
+        this.mockMvc.perform(get("/swagger-ui/index.html"))
+                .andExpect(status().isOk());
     }
 }

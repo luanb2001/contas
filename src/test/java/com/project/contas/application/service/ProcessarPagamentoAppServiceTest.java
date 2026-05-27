@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -50,7 +51,7 @@ public class ProcessarPagamentoAppServiceTest {
         UUID contaId = UUID.randomUUID();
 
         this.pagamentoDTO = new PagamentoDTO(pagamentoId, contaId, LocalDateTime.now(), null, 100.0, StatusPagamentoEnum.PENDENTE, null);
-        this.contaDTO = new ContaDTO(contaId, LocalDateTime.MAX, LocalDateTime.now(),"teste", SituacaoContaEnum.ABERTA,  100.0);
+        this.contaDTO = new ContaDTO(contaId, LocalDateTime.MAX, LocalDateTime.now(), "teste", SituacaoContaEnum.ABERTA, BigDecimal.valueOf(100.0), null, null);
     }
 
     @Test

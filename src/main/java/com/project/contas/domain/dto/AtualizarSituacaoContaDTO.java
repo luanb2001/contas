@@ -1,10 +1,11 @@
 package com.project.contas.domain.dto;
 
+import com.project.contas.domain.enums.SituacaoContaEnum;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
-import com.project.contas.domain.enums.SituacaoContaEnum;
-
 public record AtualizarSituacaoContaDTO(
-        UUID id,
-        SituacaoContaEnum situacaoContaEnum
+        @NotNull UUID id,
+        @NotNull SituacaoContaEnum situacaoContaEnum
 ) {}

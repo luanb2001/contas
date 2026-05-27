@@ -1,8 +1,9 @@
 package com.project.contas.application.usecase;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface CarregarValorPagoUseCase {
 
-    Double executar(LocalDateTime dataInicial, LocalDateTime dataFinal);
+    BigDecimal executar(LocalDateTime dataInicial, LocalDateTime dataFinal);
 }

@@ -1,48 +1,48 @@
 package com.project.contas.application.service;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
+import com.project.contas.application.exception.RegraNegocioException;
 import com.project.contas.application.usecase.ImportarContasCSVUseCase;
-import com.project.contas.domain.Conta;
-import com.project.contas.domain.dto.CadastrarContaCSV;
-import com.project.contas.domain.repository.ContaRepository;
+import com.project.contas.adapters.out.messaging.ImportacaoContaProducer;
+import com.project.contas.domain.ImportacaoConta;
+import com.project.contas.domain.dto.ImportarContasCSVMessage;
+import com.project.contas.domain.repository.ImportacaoContaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.List;
+import java.util.Base64;
+import java.util.UUID;
 
 @Service
 @Transactional
 public class ImportarContasCSVAppService implements ImportarContasCSVUseCase {
 
-    private final ContaRepository contaRepository;
+    private final ImportacaoContaRepository importacaoContaRepository;
+    private final ImportacaoContaProducer importacaoContaProducer;
 
-    public ImportarContasCSVAppService(ContaRepository contaRepository) {
-        this.contaRepository = contaRepository;
+    public ImportarContasCSVAppService(ImportacaoContaRepository importacaoContaRepository,
+                                       ImportacaoContaProducer importacaoContaProducer) {
+        this.importacaoContaRepository = importacaoContaRepository;
+        this.importacaoContaProducer = importacaoContaProducer;
     }
 
     @Override
-    public Boolean executar(MultipartFile file) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            CsvToBean<CadastrarContaCSV> csvToBean = new CsvToBeanBuilder<CadastrarContaCSV>(reader)
-                    .withType(CadastrarContaCSV.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
+    public UUID executar(MultipartFile file) {
+        try {
+            ImportacaoConta importacao = ImportacaoConta.iniciar();
+            importacaoContaRepository.save(importacao);
 
-            List<CadastrarContaCSV> cadastrarContaCSVS = csvToBean.parse();
+            String conteudoBase64 = Base64.getEncoder().encodeToString(file.getBytes());
+            ImportarContasCSVMessage mensagem = new ImportarContasCSVMessage(
+                    importacao.getId(),
+                    file.getOriginalFilename(),
+                    conteudoBase64
+            );
 
-            if (cadastrarContaCSVS == null || cadastrarContaCSVS.isEmpty()) {
-                return Boolean.FALSE;
-            }
-
-            cadastrarContaCSVS.forEach(contaCSV -> this.contaRepository.save(Conta.cadastrarConta(contaCSV)));
+            importacaoContaProducer.enviarMensagem(mensagem);
+            return importacao.getId();
         } catch (Exception e) {
-            return Boolean.FALSE;
+            throw new RegraNegocioException("Erro ao iniciar importação: " + e.getMessage());
         }
-
-        return Boolean.TRUE;
     }
 }

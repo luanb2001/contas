@@ -1,123 +1,154 @@
 package com.project.contas.domain;
 
-import com.project.contas.domain.dto.AtualizarSituacaoContaDTO;
+import com.project.contas.application.exception.RegraNegocioException;
 import com.project.contas.domain.dto.CadastrarContaCSV;
-import com.project.contas.domain.dto.CadastrarContaDTO;
-import com.project.contas.domain.dto.ContaDTO;
 import com.project.contas.domain.enums.SituacaoContaEnum;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "CONTA")
 public class Conta {
-	
-	@Id
-	private UUID id;
-	
-	private LocalDateTime dataVencimento;
-	
-	private LocalDateTime dataPagamento;
-	
-	private Double valor;
-	
-	private String descricao;
-	
-	@Enumerated(EnumType.ORDINAL)
-	private SituacaoContaEnum situacao;
 
-    public static Conta cadastrarConta(CadastrarContaDTO cadastrarContaDTO) {
+    @Id
+    private UUID id;
+
+    private LocalDateTime dataVencimento;
+
+    private LocalDateTime dataPagamento;
+
+    private BigDecimal valor;
+
+    private String descricao;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SituacaoContaEnum situacao;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fornecedor_id", nullable = false)
+    private Fornecedor fornecedor;
+
+    public static Conta cadastrarConta(LocalDateTime dataVencimento, LocalDateTime dataPagamento,
+                                       String descricao, SituacaoContaEnum situacao,
+                                       BigDecimal valor, Fornecedor fornecedor) {
         Conta conta = new Conta();
         conta.id = UUID.randomUUID();
-        conta.dataVencimento = cadastrarContaDTO.dataVencimento();
-        conta.dataPagamento = cadastrarContaDTO.dataPagamento();
-        conta.descricao = cadastrarContaDTO.descricao();
-        conta.situacao = cadastrarContaDTO.situacaoContaEnum();
-        conta.valor = cadastrarContaDTO.valor();
-
+        conta.dataVencimento = dataVencimento;
+        conta.dataPagamento = dataPagamento;
+        conta.descricao = descricao;
+        conta.situacao = situacao;
+        conta.valor = valor;
+        conta.fornecedor = fornecedor;
         return conta;
     }
 
-    public static Conta cadastrarConta(CadastrarContaCSV cadastrarContaCSV) {
+    public static Conta cadastrarConta(CadastrarContaCSV csv, Fornecedor fornecedor) {
         Conta conta = new Conta();
         conta.id = UUID.randomUUID();
-        conta.dataVencimento = cadastrarContaCSV.getDataVencimento();
-        conta.dataPagamento = cadastrarContaCSV.getDataPagamento();
-        conta.descricao = cadastrarContaCSV.getDescricao();
-        conta.situacao = cadastrarContaCSV.getSituacaoContaEnum();
-        conta.valor = cadastrarContaCSV.getValor();
-
+        conta.dataVencimento = csv.getDataVencimento();
+        conta.dataPagamento = csv.getDataPagamento();
+        conta.descricao = csv.getDescricao();
+        conta.situacao = csv.getSituacaoContaEnum();
+        conta.valor = csv.getValor();
+        conta.fornecedor = fornecedor;
         return conta;
     }
 
-    public Conta atualizarConta(ContaDTO contaDTO) {
-        this.dataVencimento = contaDTO.dataVencimento();
-        this.dataPagamento = contaDTO.dataPagamento();
-        this.descricao = contaDTO.descricao();
-        this.situacao = contaDTO.situacaoContaEnum();
-        this.valor = contaDTO.valor();
-
+    public Conta atualizar(LocalDateTime dataVencimento, LocalDateTime dataPagamento,
+                           String descricao, SituacaoContaEnum situacao,
+                           BigDecimal valor, Fornecedor fornecedor) {
+        this.dataVencimento = dataVencimento;
+        this.dataPagamento = dataPagamento;
+        this.descricao = descricao;
+        this.situacao = situacao;
+        this.valor = valor;
+        this.fornecedor = fornecedor;
         return this;
     }
 
-    public Conta atualizarSituacaoConta(AtualizarSituacaoContaDTO atualizarSituacaoContaDTO) {
-        this.situacao = atualizarSituacaoContaDTO.situacaoContaEnum();
-
-        if (SituacaoContaEnum.PAGA.equals(atualizarSituacaoContaDTO.situacaoContaEnum())) {
-        	this.dataPagamento = LocalDateTime.now();
+    public void pagar() {
+        if (SituacaoContaEnum.PAGA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta já está paga");
         }
-
-        return this;
+        if (SituacaoContaEnum.CANCELADA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta cancelada não pode ser paga");
+        }
+        this.situacao = SituacaoContaEnum.PAGA;
+        this.dataPagamento = LocalDateTime.now();
     }
 
-	public UUID getId() {
-		return id;
-	}
+    public void cancelar() {
+        if (SituacaoContaEnum.PAGA.equals(this.situacao)) {
+            throw new RegraNegocioException("Conta paga não pode ser cancelada");
+        }
+        this.situacao = SituacaoContaEnum.CANCELADA;
+    }
 
-	public void setId(UUID id) {
-		this.id = id;
-	}
+    public UUID getId() {
+        return id;
+    }
 
-	public LocalDateTime getDataVencimento() {
-		return dataVencimento;
-	}
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-	public void setDataVencimento(LocalDateTime dataVencimento) {
-		this.dataVencimento = dataVencimento;
-	}
+    public LocalDateTime getDataVencimento() {
+        return dataVencimento;
+    }
 
-	public LocalDateTime getDataPagamento() {
-		return dataPagamento;
-	}
+    public void setDataVencimento(LocalDateTime dataVencimento) {
+        this.dataVencimento = dataVencimento;
+    }
 
-	public void setDataPagamento(LocalDateTime dataPagamento) {
-		this.dataPagamento = dataPagamento;
-	}
+    public LocalDateTime getDataPagamento() {
+        return dataPagamento;
+    }
 
-	public Double getValor() {
-		return valor;
-	}
+    public void setDataPagamento(LocalDateTime dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
 
-	public void setValor(Double valor) {
-		this.valor = valor;
-	}
+    public BigDecimal getValor() {
+        return valor;
+    }
 
-	public String getDescricao() {
-		return descricao;
-	}
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
+    public String getDescricao() {
+        return descricao;
+    }
 
-	public SituacaoContaEnum getSituacao() {
-		return situacao;
-	}
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-	public void setSituacao(SituacaoContaEnum situacao) {
-		this.situacao = situacao;
-	}
+    public SituacaoContaEnum getSituacao() {
+        return situacao;
+    }
 
+    public void setSituacao(SituacaoContaEnum situacao) {
+        this.situacao = situacao;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
 }

@@ -1,9 +1,10 @@
 package com.project.contas.domain.dto;
 
+import com.project.contas.domain.enums.SituacaoContaEnum;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import com.project.contas.domain.enums.SituacaoContaEnum;
 
 public record ContaDTO(
         UUID id,
@@ -11,5 +12,7 @@ public record ContaDTO(
         LocalDateTime dataPagamento,
         String descricao,
         SituacaoContaEnum situacaoContaEnum,
-        Double valor
+        BigDecimal valor,
+        UUID fornecedorId,
+        String fornecedorNome
 ) {}
