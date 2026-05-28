@@ -205,6 +205,14 @@ curl -X POST http://localhost:8080/conta/importar-conta \
   -F "file=@src/main/resources/gerar-contas.csv"
 ```
 
+O projeto também disponibiliza um arquivo CSV de exemplo para facilitar os testes da importação assíncrona de contas.
+
+Caminho do arquivo:
+
+```text
+src/main/resources/gerar-contas.csv
+```
+
 Retorna um `UUID` de protocolo. Use-o para acompanhar o status da importação:
 
 ```bash
