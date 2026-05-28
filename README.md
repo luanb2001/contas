@@ -40,6 +40,31 @@ Após subir, acesse: http://localhost:8080/swagger-ui.html
 
 ---
 
+## Collection Postman
+
+Também é possível utilizar a collection do Postman presente no projeto para facilitar os testes da API.
+
+A collection já possui:
+- autenticação JWT automática;
+- armazenamento automático do token em variável;
+- variáveis para `fornecedorId`, `contaId` e `protocoloId`;
+- exemplos prontos para todos os endpoints.
+
+### Como utilizar
+
+1. Importe a collection no Postman;
+2. Execute primeiro a request:
+   ```text
+   Autenticação > Login - Obter token
+   ```
+3. O token JWT será salvo automaticamente e utilizado nas demais requisições.
+
+Arquivo da collection:
+```text
+ContasAPI.postman_collection.json
+```
+---
+
 ## Autenticação (JWT)
 
 Todas as rotas (exceto `/auth/login` e Swagger) exigem um Bearer Token.
