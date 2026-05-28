@@ -1,305 +1,772 @@
 {
 	"info": {
-		"_postman_id": "3930ee27-d69c-40ab-bbab-f500734fd33c",
-		"name": "ContasAPI",
+		"_postman_id": "2bd2c7b1-bf0f-4548-a008-4dcb13fbcd0c",
+		"name": "Contas API",
+		"description": "Execute primeiro 'Autenticação > Login - Obter token'. O JWT será salvo em {{token}} e enviado automaticamente nas demais requests.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "23459328"
 	},
 	"item": [
 		{
-			"name": "Cadastrar conta",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+			"name": "Autenticação",
+			"item": [
+				{
+					"name": "Login - Obter token",
+					"event": [
 						{
-							"key": "password",
-							"value": "contas",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "desafio",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Login retornou status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});",
+									"let json = {};",
+									"try { json = pm.response.json(); } catch (e) { throw new Error('Resposta do login não é JSON válido'); }",
+									"const token = json.token || json.accessToken || json.jwt;",
+									"if (token) {",
+									"  pm.collectionVariables.set('token', token);",
+									"  pm.environment.set('token', token);",
+									"}",
+									"pm.test('Token salvo em variável', function () {",
+									"  pm.expect(pm.collectionVariables.get('token') || pm.environment.get('token')).to.not.be.empty;",
+									"});"
+								]
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"dataVencimento\": \"2024-09-25T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"ABERTA\",\n    \"valor\": 10.5\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/conta",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "8080",
-					"path": [
-						"conta"
-					]
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Importar conta",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+			"name": "Fornecedor",
+			"item": [
+				{
+					"name": "Cadastrar fornecedor",
+					"event": [
 						{
-							"key": "password",
-							"value": "contas",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "desafio",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Fornecedor criado - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});",
+									"let json = {};",
+									"try { json = pm.response.json(); } catch (e) {}",
+									"const id = json.id || json.uuid || json.data?.id || json.content?.[0]?.id;",
+									"if (id) { pm.collectionVariables.set('fornecedorId', id); pm.environment.set('fornecedorId', id); }"
+								]
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/home/luan/contas/src/main/resources/csv-examplo-gerar-contas.csv"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://localhost:8080/conta/importar-conta",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "8080",
-					"path": [
-						"conta",
-						"importar-conta"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Fornecedor XPTO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/fornecedor",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fornecedor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar fornecedores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Listar fornecedores - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/fornecedor?pagina={{pagina}}&maximo-por-pagina={{maximoPorPagina}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fornecedor"
+							],
+							"query": [
+								{
+									"key": "pagina",
+									"value": "{{pagina}}"
+								},
+								{
+									"key": "maximo-por-pagina",
+									"value": "{{maximoPorPagina}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar fornecedor por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Buscar fornecedor por ID - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/fornecedor/{{fornecedorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fornecedor",
+								"{{fornecedorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar fornecedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Atualizar fornecedor - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Fornecedor XPTO Atualizado\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/fornecedor/{{fornecedorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fornecedor",
+								"{{fornecedorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar fornecedor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Deletar fornecedor - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/fornecedor/{{fornecedorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fornecedor",
+								"{{fornecedorId}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Atualizar conta",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+			"name": "Contas",
+			"item": [
+				{
+					"name": "Cadastrar conta",
+					"event": [
 						{
-							"key": "password",
-							"value": "contas",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "desafio",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Conta cadastrada - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});",
+									"let json = {};",
+									"try { json = pm.response.json(); } catch (e) {}",
+									"const id = json.id || json.uuid || json.data?.id || json.content?.[0]?.id;",
+									"if (id) { pm.collectionVariables.set('contaId', id); pm.environment.set('contaId', id); }"
+								]
+							}
 						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"cac2e5b4-1681-4b1c-b705-4f6d6fa48354\",\n    \"dataVencimento\": \"2024-09-24T12:30:45\",\n    \"dataPagamento\": \"2024-10-24T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"PAGA\",\n    \"valor\": 10.5\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/conta",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "8080",
-					"path": [
-						"conta"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dataVencimento\": \"2025-12-31T00:00:00\",\n  \"dataPagamento\": null,\n  \"descricao\": \"Conta de luz\",\n  \"situacaoContaEnum\": \"ABERTA\",\n  \"valor\": 175.50,\n  \"fornecedorId\": \"{{fornecedorId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/conta",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar conta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Atualizar conta - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{contaId}}\",\n  \"dataVencimento\": \"2025-12-31T00:00:00\",\n  \"dataPagamento\": \"2025-11-01T10:00:00\",\n  \"descricao\": \"Conta de luz atualizada\",\n  \"situacaoContaEnum\": \"PAGA\",\n  \"valor\": 175.50,\n  \"fornecedorId\": \"{{fornecedorId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/conta",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar situação da conta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Atualizar situação da conta - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{contaId}}\",\n  \"situacaoContaEnum\": \"CANCELADA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/conta",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar conta por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Buscar conta por ID - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conta/{{contaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta",
+								"{{contaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar conta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Deletar conta - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conta/{{contaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta",
+								"{{contaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar contas com filtros",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Listar contas com filtros - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conta/listar-contas?data-vencimento-inicial=2024-01-01T00:00:00&data-vencimento-final=2025-12-31T23:59:59&descricao=luz&pagina={{pagina}}&maximo-por-pagina={{maximoPorPagina}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta",
+								"listar-contas"
+							],
+							"query": [
+								{
+									"key": "data-vencimento-inicial",
+									"value": "2024-01-01T00:00:00"
+								},
+								{
+									"key": "data-vencimento-final",
+									"value": "2025-12-31T23:59:59"
+								},
+								{
+									"key": "descricao",
+									"value": "luz"
+								},
+								{
+									"key": "pagina",
+									"value": "{{pagina}}"
+								},
+								{
+									"key": "maximo-por-pagina",
+									"value": "{{maximoPorPagina}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valor total pago por período",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Valor total pago por período - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conta/carregar-valor-pago?data-inicial=2024-01-01T00:00:00&data-final=2024-12-31T23:59:59",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta",
+								"carregar-valor-pago"
+							],
+							"query": [
+								{
+									"key": "data-inicial",
+									"value": "2024-01-01T00:00:00"
+								},
+								{
+									"key": "data-final",
+									"value": "2024-12-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Importar contas via CSV",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Importação solicitada com sucesso', function () { pm.expect(pm.response.code).to.be.within(200, 299); });",
+									"let protocolo = null;",
+									"try {",
+									"  const json = pm.response.json();",
+									"  protocolo = json.id || json.protocolo || json.protocoloId || json.uuid || json;",
+									"} catch (e) {",
+									"  protocolo = pm.response.text();",
+									"}",
+									"if (typeof protocolo === 'string') { protocolo = protocolo.replace(/\\\"/g, '').trim(); }",
+									"if (protocolo) { pm.collectionVariables.set('protocoloId', protocolo); pm.environment.set('protocoloId', protocolo); }"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "{{csvFilePath}}"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/conta/importar-conta",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conta",
+								"importar-conta"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Atualizar situação conta",
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"cac2e5b4-1681-4b1c-b705-4f6d6fa48354\",\n    \"situacaoContaEnum\": \"ABERTA\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Importação",
+			"item": [
+				{
+					"name": "Consultar status da importação",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Consultar status da importação - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/conta",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "8080",
-					"path": [
-						"conta"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/importacao/{{protocoloId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"importacao",
+								"{{protocoloId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar importações",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Listar importações - status 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/importacao?pagina={{pagina}}&maximo-por-pagina={{maximoPorPagina}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"importacao"
+							],
+							"query": [
+								{
+									"key": "pagina",
+									"value": "{{pagina}}"
+								},
+								{
+									"key": "maximo-por-pagina",
+									"value": "{{maximoPorPagina}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const token = pm.collectionVariables.get('token') || pm.environment.get('token');",
+					"const isLogin = pm.info.requestName.toLowerCase().includes('login');",
+					"if (token && !isLogin) {",
+					"  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
 		},
 		{
-			"name": "Listar contas por filtro",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "contas",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "desafio",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"dataVencimento\": \"2024-06-03T12:30:45\",\n    \"descricao\": \"Conta de faculdade\",\n    \"situacaoContaEnum\": \"ABERTA\",\n    \"valor\": 10.5\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/conta/listar-contas?data-vencimento-inicial=2024-09-19T12:30:45&data-vencimento-final=2024-09-30T12:30:45&pagina=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"conta",
-						"listar-contas"
-					],
-					"query": [
-						{
-							"key": "data-vencimento-inicial",
-							"value": "2024-09-19T12:30:45"
-						},
-						{
-							"key": "data-vencimento-final",
-							"value": "2024-09-30T12:30:45"
-						},
-						{
-							"key": "pagina",
-							"value": "1"
-						},
-						{
-							"key": "descricao",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "username",
+			"value": "desafio",
+			"type": "string"
 		},
 		{
-			"name": "Carregar valor pago",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/conta/listar-contas?data-inicial=2024-09-23T12:30:45&data-final=2024-09-25T12:30:45",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"conta",
-						"listar-contas"
-					],
-					"query": [
-						{
-							"key": "data-inicial",
-							"value": "2024-09-23T12:30:45"
-						},
-						{
-							"key": "data-final",
-							"value": "2024-09-25T12:30:45"
-						},
-						{
-							"key": "descricao",
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "password",
+			"value": "contas",
+			"type": "string"
 		},
 		{
-			"name": "Carregar conta por Id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/conta/listar-contas?data-inicial=2024-09-23T12:30:45&data-final=2024-09-25T12:30:45",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"conta",
-						"listar-contas"
-					],
-					"query": [
-						{
-							"key": "data-inicial",
-							"value": "2024-09-23T12:30:45"
-						},
-						{
-							"key": "data-final",
-							"value": "2024-09-25T12:30:45"
-						},
-						{
-							"key": "descricao",
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "fornecedorId",
+			"value": "00000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "contaId",
+			"value": "00000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "protocoloId",
+			"value": "00000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "csvFilePath",
+			"value": "src/main/resources/gerar-contas.csv",
+			"type": "string"
+		},
+		{
+			"key": "pagina",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "maximoPorPagina",
+			"value": "10",
+			"type": "string"
 		}
 	]
 }

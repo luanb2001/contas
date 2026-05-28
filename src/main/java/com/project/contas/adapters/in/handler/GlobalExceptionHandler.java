@@ -1,8 +1,11 @@
 package com.project.contas.adapters.in.handler;
 
 import com.project.contas.application.exception.RegraNegocioException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(RegraNegocioException.class)
     public ResponseEntity<ApiErrorResponse> handleRegraNegocio(RegraNegocioException ex) {
@@ -29,6 +34,12 @@ public class GlobalExceptionHandler {
                 .body(new ApiErrorResponse(mensagem, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleNotReadable(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ApiErrorResponse("Valor inválido no corpo da requisição.", LocalDateTime.now()));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
         return ResponseEntity.badRequest()
@@ -39,6 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex) {
+        log.error("Erro interno não tratado: {}", ex.getMessage(), ex);
         return ResponseEntity.internalServerError()
                 .body(new ApiErrorResponse("Erro interno do servidor", LocalDateTime.now()));
     }

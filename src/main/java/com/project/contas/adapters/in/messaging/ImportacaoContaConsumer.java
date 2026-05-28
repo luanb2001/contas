@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -78,37 +79,43 @@ public class ImportacaoContaConsumer {
         List<String> detalhes = new ArrayList<>();
 
         for (int i = 0; i < linhas.size(); i++) {
-            CadastrarContaCSV csv = linhas.get(i);
-            int numeroLinha = i + 1;
-            try {
-                Set<ConstraintViolation<CadastrarContaCSV>> violations = validator.validate(csv);
-                if (!violations.isEmpty()) {
-                    String erros = violations.stream()
-                            .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                            .collect(Collectors.joining(", "));
-                    detalhes.add("Linha " + numeroLinha + ": " + erros);
-                    falhas++;
-                    continue;
-                }
-
-                UUID fornecedorUUID = UUID.fromString(csv.getFornecedorId());
-                Fornecedor fornecedor = fornecedorCache.get(fornecedorUUID);
-                if (fornecedor == null) {
-                    detalhes.add("Linha " + numeroLinha + ": Fornecedor não encontrado: " + fornecedorUUID);
-                    falhas++;
-                    continue;
-                }
-
-                contaRepository.save(Conta.cadastrarConta(csv, fornecedor));
-                processados++;
-            } catch (Exception e) {
-                detalhes.add("Linha " + numeroLinha + ": " + e.getMessage());
+            Optional<String> erro = processarLinha(i + 1, linhas.get(i), fornecedorCache);
+            if (erro.isPresent()) {
+                detalhes.add(erro.get());
                 falhas++;
+            } else {
+                processados++;
             }
         }
 
         importacao.finalizar(linhas.size(), processados, falhas, String.join("; ", detalhes));
         importacaoContaRepository.save(importacao);
+    }
+
+    private Optional<String> processarLinha(int numeroLinha, CadastrarContaCSV csv, Map<UUID, Fornecedor> fornecedorCache) {
+        try {
+            Set<ConstraintViolation<CadastrarContaCSV>> violations = validator.validate(csv);
+            if (!violations.isEmpty()) {
+                return Optional.of("Linha " + numeroLinha + ": " + formatarViolacoes(violations));
+            }
+
+            UUID fornecedorUUID = UUID.fromString(csv.getFornecedorId());
+            Fornecedor fornecedor = fornecedorCache.get(fornecedorUUID);
+            if (fornecedor == null) {
+                return Optional.of("Linha " + numeroLinha + ": Fornecedor não encontrado: " + fornecedorUUID);
+            }
+
+            contaRepository.save(Conta.cadastrarConta(csv, fornecedor));
+            return Optional.empty();
+        } catch (Exception e) {
+            return Optional.of("Linha " + numeroLinha + ": " + e.getMessage());
+        }
+    }
+
+    private String formatarViolacoes(Set<ConstraintViolation<CadastrarContaCSV>> violations) {
+        return violations.stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .collect(Collectors.joining(", "));
     }
 
     private Map<UUID, Fornecedor> carregarFornecedores(List<CadastrarContaCSV> linhas) {
