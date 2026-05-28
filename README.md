@@ -238,9 +238,11 @@ Status de importação: `PENDENTE`, `PROCESSANDO`, `FINALIZADA`, `FINALIZADA_COM
 
 ---
 
-## Decisões Arquiteturais
+# Decisões Arquiteturais
 
 ### Arquitetura Hexagonal (Ports & Adapters)
+**Por quê:** Isolar o domínio de frameworks e detalhes de infraestrutura permite testar regras de negócio sem subir o Spring, e trocar implementações (ex: banco, broker) sem tocar no núcleo da aplicação. Também torna as dependências explícitas via interfaces (ports), evitando acoplamento acidental.
+
 O projeto segue arquitetura hexagonal com separação clara entre camadas:
 - **`domain`** – Entidades (`Conta`, `Fornecedor`, `ImportacaoConta`), interfaces de repositório e regras de negócio intrínsecas ao domínio.
 - **`application`** – Use cases (interfaces/ports) e services (implementações). Orquestram o fluxo sem depender de detalhes de infraestrutura.
@@ -249,20 +251,30 @@ O projeto segue arquitetura hexagonal com separação clara entre camadas:
 - **`infrastructure`** – Configurações Spring (Security, RabbitMQ, OpenAPI).
 
 ### Prevenção de N+1 (Performance JPA)
+**Por quê:** Sem essa abordagem, ao listar N contas o JPA dispararia N queries adicionais para carregar cada `Fornecedor` associado (um por registro), degradando o desempenho linearmente com o volume de dados. Com `FetchType.EAGER` o problema seria o oposto: carregar fornecedores mesmo quando não são necessários.
+
 Queries que envolvem `Conta` e `Fornecedor` usam **projeção em DTO via construtor JPQL**, carregando apenas os campos necessários em uma única query. O relacionamento `Conta → Fornecedor` utiliza `FetchType.LAZY`, evitando carregamento desnecessário.
 
 ### Importação Assíncrona (CSV)
+**Por quê:** Arquivos CSV podem conter milhares de linhas. Processar de forma síncrona bloquearia a thread HTTP por tempo indeterminado, comprometendo a responsividade da API e arriscando timeout no cliente. A abordagem assíncrona retorna imediatamente um protocolo de rastreamento, e a Dead Letter Queue garante que falhas graves não percam mensagens silenciosamente.
+
 O endpoint de importação recebe o arquivo, cria um registro `ImportacaoConta` com status `PENDENTE`, serializa o conteúdo em Base64 e publica na fila `importacao-conta-queue`. O consumer processa cada linha individualmente em background, atualizando o status para `FINALIZADA` ou `FINALIZADA_COM_ERROS`. Falhas graves são encaminhadas à Dead Letter Queue (`importacao-conta-dlq`) para reprocessamento manual.
 
 ### Invariantes de Domínio
+**Por quê:** Centralizar as regras de negócio no domínio garante que não possam ser contornadas por nenhuma camada — seja um controller, um consumer de fila ou um teste. Se a regra ficasse no service, uma segunda entrada (ex: um novo listener) poderia bypassá-la acidentalmente.
+
 Regras intrínsecas são aplicadas nos próprios métodos de domínio:
 - Uma conta `PAGA` ou `CANCELADA` não pode ter seu estado revertido (`pagar()`, `cancelar()` lançam `RegraNegocioException`).
 - `valor` negativo ou zero é rejeitado via `@Positive` (Bean Validation) antes de chegar ao domínio.
 
 ### Segurança (JWT Stateless)
+**Por quê:** Sessões server-side exigem armazenamento compartilhado (cache ou banco) quando há múltiplas instâncias, criando acoplamento de infraestrutura. JWT stateless elimina essa dependência: qualquer instância valida o token de forma independente, facilitando escalabilidade horizontal.
+
 Spring Security configurado como STATELESS. O `JwtAuthenticationFilter` intercepta cada request, valida o Bearer Token via `JwtService` (JJWT 0.12.x) e popula o `SecurityContext`. Rotas públicas: `/auth/login`, `/swagger-ui/**`, `/v3/api-docs/**`.
 
 ### Flyway
+**Por quê:** Sem versionamento de schema, mudanças no banco são aplicadas manualmente e de forma inconsistente entre ambientes (local, staging, produção). O Flyway garante que cada ambiente passe exatamente pelas mesmas migrações, na mesma ordem, de forma reproduzível e auditável.
+
 Migrações versionadas em `src/main/resources/db/migration/`:
 - `V1` – Criação da tabela `conta`
 - `V2` – Criação da tabela `fornecedor`
